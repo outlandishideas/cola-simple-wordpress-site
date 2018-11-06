@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+
+  db:
+    image: mysql:5.6.27
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - database:/var/lib/mysql
+    restart: always
+
+  app:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+      target: development
+    expose:
+      - "9000"
+    volumes:
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+    restart: always
+
+  web:
+    depends_on:
+      - app
+    ports:
+      - "8080:8080"
+    image: nginx:latest
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/application.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+
+volumes:
+  database:
+  vendor:

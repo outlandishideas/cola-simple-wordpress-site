@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -e
+
+composer install
+
+if ! wp --allow-root core is-installed; then
+
+    echo "Installing WordPress!"
+
+    url=${WP_HOME:-"http://localhost:8080"}
+    admin_user=${WP_ADMIN_USER:-"admin"}
+    admin_password=${WP_ADMIN_PASSWORD:-"admin"}
+    admin_email=${WP_ADMIN_EMAIL:-"admin@example.com"}
+
+    wp \
+        --allow-root \
+        core install \
+        --url="$url" \
+        --title="Simple WordPress Site" \
+        --admin_user="$admin_user" \
+        --admin_password="$admin_password" \
+        --admin_email="$admin_email"
+
+else
+
+    echo "WordPress is already installed!"
+
+fi
+
+docker-php-entrypoint "$@"

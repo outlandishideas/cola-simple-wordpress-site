@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+
+  app:
+    image: outlandish/cola-simple-wordpress-site
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+      target: production
